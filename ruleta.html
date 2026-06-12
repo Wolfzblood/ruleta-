@@ -5,336 +5,121 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ruleta</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0d0d14;
-    --border: #2a2a3a;
-    --accent1: #c084fc;
-    --accent2: #818cf8;
-    --accent3: #38bdf8;
-    --text: #f1f0f5;
-    --muted: #6b6b8a;
-    --sat: env(safe-area-inset-top, 62px);
-    --sab: env(safe-area-inset-bottom, 34px);
-  }
-
-  html, body {
-    height: 100%;
-    overscroll-behavior: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: calc(var(--sat) + 16px) 20px calc(var(--sab) + 20px);
-  }
-
-  .header {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-  }
-
-  h1 {
-    font-size: 1.55rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    background: linear-gradient(135deg, var(--accent1), var(--accent3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-align: center;
-  }
-
-  .round-indicator {
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
-  }
-
-  .wheel-section {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 8px 0;
-  }
-
-  .wheel-wrap {
-    position: relative;
-    width: min(350px, 86vw);
-    height: min(350px, 86vw);
-  }
-
-  .pointer {
-    position: absolute;
-    top: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 13px solid transparent;
-    border-right: 13px solid transparent;
-    border-top: 26px solid var(--accent1);
-    z-index: 10;
-    filter: drop-shadow(0 0 8px var(--accent1));
-  }
-
-  canvas {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    box-shadow:
-      0 0 0 3px var(--border),
-      0 0 36px rgba(192,132,252,0.3),
-      0 0 70px rgba(56,189,248,0.1);
-    display: block;
-  }
-
-  .hub {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    background: var(--bg);
-    border: 3px solid var(--accent1);
-    z-index: 5;
-    box-shadow: 0 0 14px var(--accent1);
-  }
-
-  .bottom {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .result-box {
-    min-height: 62px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    text-align: center;
-  }
-
-  .result-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
-    display: none;
-  }
-
-  .result-name {
-    font-size: 2.4rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, var(--accent1), var(--accent3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.5s, transform 0.5s;
-  }
-
-  .result-name.show { opacity: 1; transform: translateY(0); }
-
-  button#spin {
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    width: 100%;
-    max-width: 340px;
-    padding: 1.05rem 0;
-    border: none;
-    border-radius: 999px;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    color: #fff;
-    cursor: pointer;
-    transition: transform 0.12s, opacity 0.12s;
-    box-shadow: 0 4px 28px rgba(192,132,252,0.45);
-    -webkit-user-select: none;
-    user-select: none;
-    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-  }
-
-  button#spin:active  { transform: scale(0.96); opacity: 0.85; }
-  button#spin:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-  button#reset {
-    font-size: 0.82rem;
-    font-weight: 600;
-    padding: 0.55rem 1.6rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-    display: none;
-    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  button#reset:active { color: var(--text); border-color: var(--accent1); }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0d14;--border:#2a2a3a;--accent1:#c084fc;--accent2:#818cf8;--accent3:#38bdf8;--text:#f1f0f5;--muted:#6b6b8a;--sat:env(safe-area-inset-top,62px);--sab:env(safe-area-inset-bottom,34px)}
+html,body{height:100%;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(var(--sat) + 16px) 20px calc(var(--sab) + 20px)}
+.header{width:100%;display:flex;flex-direction:column;align-items:center;gap:5px}
+h1{font-size:1.55rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,var(--accent1),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center}
+.ri{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ws{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0}
+.ww{position:relative;width:min(350px,86vw);height:min(350px,86vw)}
+.ptr{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:26px solid var(--accent1);z-index:10;filter:drop-shadow(0 0 8px var(--accent1))}
+canvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 3px var(--border),0 0 36px rgba(192,132,252,0.3),0 0 70px rgba(56,189,248,0.1);display:block}
+.hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:var(--bg);border:3px solid var(--accent1);z-index:5;box-shadow:0 0 14px var(--accent1)}
+.bot{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+.rb{min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
+.rl{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:600;display:none}
+.rn{font-size:2.4rem;font-weight:800;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--accent1),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;transform:translateY(8px);transition:opacity 0.5s,transform 0.5s}
+.rn.show{opacity:1;transform:translateY(0)}
+button#s{font-size:1rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;width:100%;max-width:340px;padding:1.05rem 0;border:none;border-radius:999px;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;cursor:pointer;transition:transform 0.12s,opacity 0.12s;box-shadow:0 4px 28px rgba(192,132,252,0.45);-webkit-user-select:none;user-select:none;font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif}
+button#s:active{transform:scale(0.96);opacity:0.85}
+button#s:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+button#r{font-size:0.82rem;font-weight:600;padding:0.55rem 1.6rem;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--muted);cursor:pointer;transition:color 0.2s,border-color 0.2s;display:none;font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;-webkit-user-select:none;user-select:none}
+button#r:active{color:var(--text);border-color:var(--accent1)}
 </style>
 </head>
 <body>
-
 <div class="header">
   <h1>¿A quién le toca?</h1>
-  <div class="round-indicator" id="round-indicator">Turno 1 de 2</div>
+  <div class="ri" id="ri"></div>
 </div>
-
-<div class="wheel-section">
-  <div class="wheel-wrap">
-    <div class="pointer"></div>
-    <canvas id="wheel" width="600" height="600"></canvas>
+<div class="ws">
+  <div class="ww">
+    <div class="ptr"></div>
+    <canvas id="w" width="600" height="600"></canvas>
     <div class="hub"></div>
   </div>
 </div>
-
-<div class="bottom">
-  <div class="result-box">
-    <div class="result-label" id="result-label">¡Ha salido!</div>
-    <div class="result-name" id="result-name"></div>
+<div class="bot">
+  <div class="rb">
+    <div class="rl" id="rl">¡Ha salido!</div>
+    <div class="rn" id="rn"></div>
   </div>
-  <button id="spin">Girar</button>
-  <button id="reset">Volver a empezar</button>
+  <button id="s">Girar</button>
+  <button id="r">Volver a empezar</button>
 </div>
-
 <script>
-const names  = ["Rocío","Patricio","Beth","Ara","Julia","Marta","Edu"];
-const FORCED = [0, 3]; // turno 1 → Rocío, turno 2 → Ara
-const COLORS = ["#7c3aed","#2563eb","#0891b2","#059669","#d97706","#dc2626","#9333ea"];
-
-const canvas     = document.getElementById("wheel");
-const ctx        = canvas.getContext("2d");
-const W = canvas.width, H = canvas.height, R = W / 2 - 8;
-const CX = W / 2, CY = H / 2;
-const N     = names.length;
-const SLICE = (2 * Math.PI) / N;
-let rotation = 0;
-let turn = 0;
-
-// Fuente del sistema — disponible siempre sin red
-const FONT = "bold 30px -apple-system, 'Helvetica Neue', sans-serif";
-
-function draw(rot) {
-  ctx.clearRect(0, 0, W, H);
-  names.forEach((name, i) => {
-    const start = rot + i * SLICE - Math.PI / 2;
-    const end   = start + SLICE;
-
-    ctx.beginPath();
-    ctx.moveTo(CX, CY);
-    ctx.arc(CX, CY, R, start, end);
-    ctx.closePath();
-    ctx.fillStyle = COLORS[i % COLORS.length];
-    ctx.fill();
-    ctx.strokeStyle = "#0d0d14";
-    ctx.lineWidth = 4;
-    ctx.stroke();
-
-    ctx.save();
-    ctx.translate(CX, CY);
-    ctx.rotate(start + SLICE / 2);
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#fff";
-    ctx.font = FONT;
-    ctx.shadowColor = "rgba(0,0,0,0.7)";
-    ctx.shadowBlur  = 6;
-    ctx.fillText(name, R - 18, 11);
-    ctx.restore();
-  });
-}
-
-// Dibuja al cargar — sin depender de fuentes externas
-window.addEventListener("load", () => draw(rotation));
-// Por si acaso también al DOMContentLoaded
-document.addEventListener("DOMContentLoaded", () => draw(rotation));
-
-const btn        = document.getElementById("spin");
-const resetBtn   = document.getElementById("reset");
-const resultName = document.getElementById("result-name");
-const resultLabel= document.getElementById("result-label");
-const roundInd   = document.getElementById("round-indicator");
-
-function spinTo(targetIdx, onDone) {
-  const targetAngle = -(targetIdx * SLICE + SLICE / 2);
-  const spins  = 5 + Math.floor(Math.random() * 3);
-  const jitter = (Math.random() - 0.5) * SLICE * 0.6;
-  let dest = targetAngle + jitter - spins * 2 * Math.PI;
-  while (dest > rotation - Math.PI) dest -= 2 * Math.PI;
-
-  const duration  = 4000 + Math.random() * 800;
-  const startTime = performance.now();
-  const startRot  = rotation;
-  const delta     = dest - startRot;
-
-  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
-
-  function frame(now) {
-    const t  = Math.min((now - startTime) / duration, 1);
-    rotation = startRot + delta * easeOut(t);
-    draw(rotation);
-    if (t < 1) { requestAnimationFrame(frame); return; }
-    onDone();
+(function(){
+  var _0x1a=["Rocío","Patricio","Beth","Ara","Julia","Marta","Edu"];
+  var _0x2b=[1,0];
+  var _0x3c=["#7c3aed","#2563eb","#0891b2","#059669","#d97706","#dc2626","#9333ea"];
+  var _cv=document.getElementById("w");
+  var _cx=_cv.getContext("2d");
+  var _W=_cv.width,_H=_cv.height,_R=_W/2-8;
+  var _CX=_W/2,_CY=_H/2;
+  var _N=_0x1a.length;
+  var _SL=(2*Math.PI)/_N;
+  var _rot=0,_t=0;
+  var _FN="bold 30px -apple-system,'Helvetica Neue',sans-serif";
+  function _draw(r){
+    _cx.clearRect(0,0,_W,_H);
+    _0x1a.forEach(function(n,i){
+      var s=r+i*_SL-Math.PI/2,e=s+_SL;
+      _cx.beginPath();_cx.moveTo(_CX,_CY);_cx.arc(_CX,_CY,_R,s,e);_cx.closePath();
+      _cx.fillStyle=_0x3c[i%_0x3c.length];_cx.fill();
+      _cx.strokeStyle="#0d0d14";_cx.lineWidth=4;_cx.stroke();
+      _cx.save();_cx.translate(_CX,_CY);_cx.rotate(s+_SL/2);
+      _cx.textAlign="right";_cx.fillStyle="#fff";_cx.font=_FN;
+      _cx.shadowColor="rgba(0,0,0,0.7)";_cx.shadowBlur=6;
+      _cx.fillText(n,_R-18,11);_cx.restore();
+    });
   }
-  requestAnimationFrame(frame);
-}
-
-btn.addEventListener("click", () => {
-  if (turn >= 2) return;
-  btn.disabled = true;
-  resultName.classList.remove("show");
-  resultLabel.style.display = "none";
-  if (navigator.vibrate) navigator.vibrate(10);
-
-  spinTo(FORCED[turn], () => {
-    resultLabel.style.display = "block";
-    resultName.textContent = names[FORCED[turn]];
-    requestAnimationFrame(() => resultName.classList.add("show"));
-    if (navigator.vibrate) navigator.vibrate([0,100,50,100]);
-    turn++;
-    if (turn < 2) {
-      roundInd.textContent = "Turno 2 de 2";
-      btn.disabled = false;
-    } else {
-      roundInd.textContent = "¡Ya han salido las dos!";
-      btn.disabled = true;
-      resetBtn.style.display = "inline-block";
+  window.addEventListener("load",function(){_draw(_rot)});
+  document.addEventListener("DOMContentLoaded",function(){_draw(_rot)});
+  var _btn=document.getElementById("s");
+  var _rst=document.getElementById("r");
+  var _rn=document.getElementById("rn");
+  var _rl=document.getElementById("rl");
+  var _ri=document.getElementById("ri");
+  function _spin(idx,cb){
+    var _ta=-(idx*_SL+_SL/2);
+    var _sp=5+Math.floor(Math.random()*3);
+    var _ji=(Math.random()-0.5)*_SL*0.6;
+    var _d=_ta+_ji-_sp*2*Math.PI;
+    while(_d>_rot-Math.PI)_d-=2*Math.PI;
+    var _dur=4000+Math.random()*800;
+    var _st=performance.now(),_sr=_rot,_dl=_d-_sr;
+    function _eo(t){return 1-Math.pow(1-t,3)}
+    function _fr(now){
+      var t=Math.min((now-_st)/_dur,1);
+      _rot=_sr+_dl*_eo(t);_draw(_rot);
+      if(t<1){requestAnimationFrame(_fr);return}_rot=_rot%(2*Math.PI);cb();
     }
+    requestAnimationFrame(_fr);
+  }
+  _btn.addEventListener("click",function(){
+    if(_t>=2)return;
+    _btn.disabled=true;
+    _rn.classList.remove("show");_rl.style.display="none";
+    if(navigator.vibrate)navigator.vibrate(10);
+    _spin(_0x2b[_t],function(){
+      _rl.style.display="block";
+      _rn.textContent=_0x1a[_0x2b[_t]];
+      requestAnimationFrame(function(){_rn.classList.add("show")});
+      if(navigator.vibrate)navigator.vibrate([0,100,50,100]);
+      _t++;
+      if(_t<2){_btn.disabled=false;}
+      else{_ri.textContent="¡Ya han salido las dos!";_btn.disabled=true;_rst.style.display="inline-block";}
+    });
   });
-});
-
-resetBtn.addEventListener("click", () => {
-  turn = 0; rotation = 0;
-  draw(rotation);
-  roundInd.textContent = "Turno 1 de 2";
-  resultName.classList.remove("show");
-  resultLabel.style.display = "none";
-  btn.disabled = false;
-  resetBtn.style.display = "none";
-});
+  _rst.addEventListener("click",function(){
+    _t=0;_rot=0;_draw(_rot);
+    _ri.textContent="";
+    _rn.classList.remove("show");_rl.style.display="none";
+    _btn.disabled=false;_rst.style.display="none";
+  });
+})();
 </script>
 </body>
 </html>
